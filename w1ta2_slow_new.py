@@ -2,7 +2,7 @@ import sys
 from anyio import DelimiterNotFound
 
 from matplotlib import pyplot as plt
-sys.path.insert(0, '/Users/tinekesalmon/Documents/exp_py/graphene')
+sys.path.insert(0, '../exp_py/graphene')
 
 import numpy as np
 

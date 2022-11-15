@@ -2,7 +2,7 @@ import sys
 
 from matplotlib import pyplot as plt
 
-sys.path.insert(0, '/Users/tinekesalmon/Documents/exp_py/graphene')
+sys.path.insert(0, '../exp_py/graphene')
 
 import numpy as np
 
@@ -12,7 +12,7 @@ graphene.set_args(['ssh', 'f4a', 'device_c', 'ask', 'db'])
 graphene.set_cache('.graphene')
 
 #load a text file of times. t1 column 0, t2 column 1.
-times=np.loadtxt("/Users/tinekesalmon/Documents/fridge4_He3n/times.txt")
+times=np.loadtxt("times.txt")
 
 #open some empty lists
 heat_capacity=[]
@@ -90,7 +90,7 @@ def time_set(t1, t2):
     plt.title("w1ta at %d" %(t1))
     plt.xlabel("Time (s)")
     plt.ylabel("Temperature")
-    plt.savefig('/Users/tinekesalmon/Documents/fridge4_He3n/heat_capacity_slow_temp_plot%d.png' %(t1))
+    plt.savefig('heat_capacity_slow_temp_plot%d.png' %(t1))
     
     plt.figure(2)
     plt.clf()
@@ -98,7 +98,7 @@ def time_set(t1, t2):
     plt.title("w1ta at %d" %(t1))
     plt.xlabel("Time (s)")
     plt.ylabel("Voltage (V)")
-    plt.savefig('/Users/tinekesalmon/Documents/fridge4_He3n/heat_capacity_slow_volt_plot%d.png' %(t1))
+    plt.savefig('heat_capacity_slow_volt_plot%d.png' %(t1))
 
     #temperature rate (gradients). Temp measured in milliKelvin so *e-3 to convert to K
     # parasitic temperature gradient before heating 
