@@ -161,4 +161,3 @@ print(Q_p)
     # f = open("/Users/tinekesalmon/Documents/fridge4_He3n/Heat_Capacities.txt", "r")
     # print(f.read())
     # print('t1_test', t1)
-
