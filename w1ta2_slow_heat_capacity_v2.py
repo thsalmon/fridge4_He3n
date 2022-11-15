@@ -1,3 +1,6 @@
+import os
+os.chdir(os.path.dirname(__file__))
+
 import sys
 
 from matplotlib import pyplot as plt
@@ -12,7 +15,7 @@ graphene.set_args(['ssh', 'f4a', 'device_c', 'ask', 'db'])
 graphene.set_cache('.graphene')
 
 #load a text file of times. t1 column 0, t2 column 1.
-times=np.loadtxt("times.txt")
+times=np.loadtxt('times.txt')
 
 #open some empty lists
 heat_capacity=[]
@@ -61,7 +64,6 @@ def time_set(t1, t2):
     # polynomial fit of x against y (temp values), 1st order polynomial
     z_initial=np.polyfit(time_initial, temp_inital, 1)
     p_initial = np.poly1d(z_initial)
-    print("p_initial =",p_initial)
     # # finds the gradient from the polynomial fit output 
     # print("Grad_initial =", p_initial[1])
     # creates a linspace suitable for the length of the displayed fit line
@@ -70,7 +72,6 @@ def time_set(t1, t2):
     # centre part 
     z_centre=np.polyfit(time_centre, temp_centre, 1)
     p_centre = np.poly1d(z_centre)
-    print("p_centre =",p_centre)
     # # finds the gradient from the polynomial fit output 
     # print("Grad_centre =", p_centre[1])
     # creates a linspace suitable for the length of the displayed fit line
@@ -79,7 +80,6 @@ def time_set(t1, t2):
     # end part 
     z_end=np.polyfit(time_end, temp_end, 1)
     p_end = np.poly1d(z_end)
-    print("p_end =",p_end)
     # # finds the gradient from the polynomial fit output 
     # print("Grad_end =", p_end[1])
     # creates a linspace suitable for the length of the displayed fit line
@@ -89,7 +89,7 @@ def time_set(t1, t2):
     plt.plot(temp[0]-t0, temp[1], '.', xp_initial, p_initial(xp_initial), xp_centre, p_centre(xp_centre), xp_end, p_end(xp_end))
     plt.title("w1ta at %d" %(t1))
     plt.xlabel("Time (s)")
-    plt.ylabel("Temperature")
+    plt.ylabel("Temperature (mK)")
     plt.savefig('heat_capacity_slow_temp_plot%d.png' %(t1))
     
     plt.figure(2)
@@ -124,15 +124,10 @@ def time_set(t1, t2):
     
     #need to save values to an array
     heat_capacity.append(c)
-    print('c', heat_capacity)
     heat_leak.append(Q_p)
-    print('Q_p', heat_leak)
     average_temperature.append(T_av)
-    print('av T', average_temperature)
     time_1.append(t1)
-    print('t1', time_1)
     time_2.append(t2)
-    print('t2', time_2)
 
     return heat_capacity, heat_leak, average_temperature, time_1, time_2
 
@@ -141,25 +136,28 @@ for index in range(len(times)):
     t2a=times[index,1]
     heat_capacity, heat_leak, average_temperature, time_1, time_2 =time_set(t1a, t2a)
 
-print('time1',time_1)
-print('time2',time_2)
-print('av temp',average_temperature)
-print('c',heat_capacity)
-print('q_p',heat_leak)
+np.savetxt('time1.txt', time_1)
+np.savetxt('time2.txt', time_2)
+np.savetxt('avtemp.txt', average_temperature)
+np.savetxt('heatcapacity.txt', heat_capacity)
+np.savetxt('heatleak.txt', heat_leak)
 
-# #slow heating. starts 2022-10-20 12:18:35 ends 2022-10-20 12:31:33
-# #convert time to unix 
-# import datetime
-# import time
-# date_time = datetime.datetime(2022, 10, 20, 12, 18, 35)
-# print("Given Date:",date_time)
-# print("UNIX timestamp:",
-# (time.mktime(date_time.timetuple())))
-# t1a=time.mktime(date_time.timetuple())
-# print(t1a)
+time1=np.loadtxt('time1.txt')
+time2=np.loadtxt('time2.txt')
+avtemp=np.loadtxt('avtemp.txt')
+heatC=np.loadtxt('heatcapacity.txt')
+heatQ=np.loadtxt('heatleak.txt')
 
-# date_time = datetime.datetime(2022, 10, 20, 12, 31, 33)
-# print("Given Date:",date_time)
-# print("UNIX timestamp:",
-# (time.mktime(date_time.timetuple())))
-# t2a=time.mktime(date_time.timetuple())
+# fitting for heat capacity vs. temperature plot
+z_temp=np.polyfit(avtemp, heatC, 1)
+p_temp = np.poly1d(z_temp)
+# creates a linspace suitable for the length of the displayed fit line
+xp_temp = np.linspace(avtemp[0], avtemp[-1], 100)
+
+plt.figure(3)
+plt.clf
+plt.plot(avtemp, heatC, '.', xp_temp, p_temp(xp_temp))
+plt.title("15 min heating normal He3 at %d" %(time1[0]))
+plt.xlabel("Temperature (mK)")
+plt.ylabel("Heat Capacity (J/K)")
+plt.savefig('Heat_capacity_v_Temperature%d.png' %(time1[0]))
